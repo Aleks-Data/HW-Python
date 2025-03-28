@@ -6,7 +6,7 @@
 import mysql.connector
 
 dbconfig = {'host':
-            'ich-db.ccegls0svc9m.eu-central-1.rds.amazonaws.com',
+            'ich-db.edu.itcareerhub.de',
             'user': 'ich1',
             'password': 'password',
             'database': 'ich_edit'}
@@ -21,13 +21,14 @@ name = input("Выберите одного из них: ")
 if name not in names:
     print("Такого пользователя нет")
 else:
-    cursor.execute("SELECT users.name, users.age, product.prod FROM users JOIN sales ON users.id=sales.id JOIN product ON product.pid=sales.pid WHERE users.name=%s", (name,))
+    cursor.execute("SELECT product.prod FROM users JOIN sales ON users.id=sales.id JOIN product ON product.pid=sales.pid WHERE users.name=%s", (name,))
 result = cursor.fetchall()
 if len(result) == 0:
     print(f"У пользователя {name} нет покупок")
 else:
-    print("ИМЯ\t\tВОЗРАСТ\t\tТОВАР ")
+    print("Покупки пользователя:")
 for row in result:
     print(*row, sep="\t\t")
 cursor.close()
 connection.close()
+  
