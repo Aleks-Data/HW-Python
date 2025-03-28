@@ -6,24 +6,33 @@
 import mysql.connector
 
 dbconfig = {'host':
-            'ich-db.ccegls0svc9m.eu-central-1.rds.amazonaws.com',
+            'ich-db.edu.itcareerhub.de',
             'user': 'ich1',
             'password': 'password',
             'database': 'ich_edit'}
-db_info = {"users": ["id", "name", "age"],
-           "product": ["pid", "prod", "quantity"],
-           "sales": ["sid", "pid", "id"]}
+
+tables = ["Users", "Products", "Sales"]
 table = input("Введите название таблицы: ")
-if table not in db_info.keys():
+
+if table not in tables:
     print("Такой таблицы нет в БД")
-else:
+
+
+try:
     connection = mysql.connector.connect(**dbconfig)
-cursor = connection.cursor()
-_sql = f"SELECT * FROM {table}"
-cursor.execute(_sql)
-result = cursor.fetchall()
-print(*db_info[table], sep="\t\t")
-for row in result:
-    print(*row, sep="\t\t")
+    cursor = connection.cursor()
+    query = f"SELECT * FROM {table}"
+    cursor.execute(query)
+    result = cursor.fetchall()
+    column_headers = [desc[0] for desc in cursor.description]
+    print(*column_headers, sep="\t\t")
+
+    for row in result:
+        print(*row, sep="\t\t")
+except mysql.connector.Error as err:
+    print(f"Ошибка: {err}")
+    
+finally:
     cursor.close()
     connection.close()
+            
