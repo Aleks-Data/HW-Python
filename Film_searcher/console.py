@@ -9,7 +9,8 @@ from db_operations import (
     database_is_exists,
     get_user_id,
     save_query_results,
-    find_films_by_year
+    find_films_by_year,
+    get_film_statistics
 )
 
 from db_setup import (
@@ -98,11 +99,15 @@ def main():
 
         elif action == "2":
             stat_action = input(
-                "1 - Статистика по всем пользователям, 2 - Статистика по вам\n")
+                "1 - Статистика по всем пользователям, 2 - Статистика по Вам, 3 - Рейтинг фильмов\n")
             if stat_action == "1":
                 print(get_all_users_statistics())
             elif stat_action == "2":
                 print(get_user_statistics(username))
+            elif stat_action == "3":
+                print(get_film_statistics())
+            else:
+                print("Неверный ввод")
 
         elif action == "3":
             field_action = input(

@@ -1,3 +1,4 @@
+import sqlite3
 import mysql.connector
 from db_setup import get_connection
 
@@ -300,6 +301,35 @@ def save_query_results(user_id: int, query: str, film_ids: list[int]):
     except mysql.connector.Error as err:
         print(f"Ошибка при сохранении данных: {err}")
 
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_film_statistics():
+
+    try:
+        conn = get_connection(db_name='sumarokovav_300924')
+        cursor = conn.cursor()
+
+        query = """
+        SELECT film_id, COUNT(film_id) as frequency
+        FROM Responses
+        GROUP BY film_id
+        ORDER BY frequency DESC, film_id ASC;
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        if results:
+            print("Рейтинг фильмов по частоте их появления:")
+            for rank, (film_id, frequency) in enumerate(results, start=1):
+                print(f"{rank}. Фильм ID: {film_id} | Частота: {frequency}")
+        else:
+            print("Данные о фильмах отсутствуют в таблице Responses.")
+
+    except mysql.connector.Error as err:
+        print(f"Ошибка при работе с базой данных: {e}")
     finally:
         cursor.close()
         conn.close()
